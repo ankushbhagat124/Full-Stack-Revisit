@@ -22,3 +22,29 @@ export const createPost = async (req, res) => {
     res.status(409).json({ message: error.message });
   }
 };
+
+// Update a post
+export const updatePost = async (req, res) => {
+  const { id: _id } = req.params;
+  // req.body contains the updated post
+  const post = req.body;
+  // Check if the id is valid
+  if (!mongoose.Types.ObjectId.isValid(_id))
+    return res.status(404).send("No post with that id");
+  // Update the post
+  const updatedPost = await PostMessage.findByIdAndUpdate(_id, post, {
+    new: true
+  });
+  res.json(updatedPost);
+};
+
+// Delete a post
+export const deletePost = async (req, res) => {
+  const { id } = req.params;
+  // Check if the id is valid
+  if (!mongoose.Types.ObjectId.isValid(id))
+    return res.status(404).send("No post with that id");
+  // Delete the post
+  await PostMessage.findByIdAndRemove(id);
+  res.json({ message: "Post deleted successfully" });
+};
